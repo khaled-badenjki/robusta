@@ -52,6 +52,14 @@ class ShiftEncryptionProvider implements EncryptionProvider
 
         foreach ($characters as $idx => $char) {
 
+            if ($char == ' '){
+
+                $result[$idx] = ' ';
+
+                continue;
+                
+            }
+
             $result[$idx] = chr(97 + (ord($char) - 97 + $distance) % 26);
 
         }
