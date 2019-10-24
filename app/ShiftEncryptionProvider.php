@@ -6,10 +6,10 @@ namespace App;
  * ShiftEncryptionProvider
  *
  * @author M Khaled Badenjki <m.k.badenjki@gmail.com>
- * @copyright This code is part of the recruitment process at Robusta Studios, Cairo, Egypt.
+ * @copyright This code is part of the recruitment process for Robusta Studios, Cairo, Egypt.
  */
 
-class ShiftEncryptionProvider
+class ShiftEncryptionProvider implements EncryptionProvider
 {
 
     /**
