@@ -191,7 +191,7 @@ class MatrixEncryptionProvider implements EncryptionProvider
 
         $index = 0;
 
-        if(substr($data,-1) == ',') {$x = substr($data, 0, -1);}
+        if(substr($data,-1) == ',') {$data = substr($data, 0, -1);}
 
         $encodedArray = array_chunk(array_map('intval', explode (',',$data)),16);
 
