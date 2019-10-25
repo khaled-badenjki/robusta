@@ -15,6 +15,10 @@ class Helper
 
         'SHIFT_AMOUNT' => 3,
 
+        'ENCODE_URL' => 'http://backendtask.robustastudio.com/encode',
+
+        'DECODE_URL' => 'http://backendtask.robustastudio.com/decode',
+
         'ENC_MATRIX' => [
             [8.000,4.000,4.000,8.000,7.000,8.000,7.000,1.000,9.000,4.000,1.000,1.000,1.000,6.000,3.000,0.000],
             [9.000,6.000,0.000,0.000,5.000,4.000,2.000,3.000,1.000,4.000,7.000,8.000,2.000,6.000,0.000,5.000],
@@ -188,6 +192,33 @@ class Helper
         }
 
         return join("", $result);
+
+    }
+
+    public function consumeApi($url, $data){
+
+        $postData = array(
+            'string' => $data,
+        );
+
+        $context = stream_context_create(array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => "Content-Type: application/json\r\n",
+                'content' => json_encode($postData)
+            )
+        ));
+
+        $response = file_get_contents($url,FALSE, $context);
+
+        if ($response === FALSE){
+            echo "Something went wrong.";
+
+            exit();
+
+        }
+
+        return json_decode($response)->string;
 
     }
 

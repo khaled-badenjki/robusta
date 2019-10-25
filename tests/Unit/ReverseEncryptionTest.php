@@ -1,10 +1,10 @@
 <?php
 
 use App\Helper;
-use App\MatrixEncryptionProvider;
+use App\ReverseEncryptionProvider;
 use PHPUnit\Framework\TestCase;
 
-class MatrixEncryptionTest extends TestCase
+class ReverseEncryptionTest extends TestCase
 {
 
     /** @test */
@@ -14,16 +14,18 @@ class MatrixEncryptionTest extends TestCase
 
         $helper = new Helper();
 
-        $matrixEncrypter = new MatrixEncryptionProvider($helper);
+        $matrixEncrypter = new ReverseEncryptionProvider($helper);
 
         $encryptedData = $matrixEncrypter->encrypt($data);
 
         // Complete the implementation.
-        $this->assertEquals("15,12,12,14,15,15,14,9,6,14,12,8,8,20,17,5,20,21,13,18,17,18,15,9,6,22,17,14,17,29,24,5,", $encryptedData);
+        $this->assertEquals("ih", $encryptedData);
 
         $decryptedData = $matrixEncrypter->decrypt($encryptedData);
 
         $this->assertEquals($decryptedData, $data);
+
+        echo $encryptedData;
 
     }
 

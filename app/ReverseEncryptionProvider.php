@@ -3,55 +3,61 @@
 
 namespace App;
 
+use App\Helper;
+
+require_once ('EncryptionProvider.php');
+require_once ('Helper.php');
+
+/**
+ * Class ReverseEncryptionProvider
+ * @package App
+ */
 class ReverseEncryptionProvider implements EncryptionProvider
 {
 
-    private $ENCODE_URL = 'http://backendtask.robustastudio.com/encode';
+    /**
+     * @var mixed
+     */
+    private $ENCODE_URL;
 
-    private $DECODE_URL = 'http://backendtask.robustastudio.com/decode';
+    private $DECODE_URL;
 
-    public function __construct()
+    /**
+     * @var
+     */
+    public $helper;
+
+    /**
+     * ReverseEncryptionProvider constructor.
+     * @param $helper
+     */
+    public function __construct($helper)
     {
+
+        $this->helper = $helper;
+
+        $this->ENCODE_URL = $helper->config['ENCODE_URL'];
+
+        $this->DECODE_URL = $helper->config['DECODE_URL'];
+
+
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function encrypt($data)
     {
 
-        return $this->consumeApi($this->ENCODE_URL, $data);
+        return $this->helper->consumeApi($this->ENCODE_URL, $data);
 
     }
 
     public function decrypt($data)
     {
 
-        return $this->consumeApi($this->DECODE_URL, $data);
-
-    }
-
-    public function consumeApi($url, $data){
-
-        $postData = array(
-            'string' => $data,
-        );
-
-        $context = stream_context_create(array(
-            'http' => array(
-                'method' => 'POST',
-                'header' => "Content-Type: application/json\r\n",
-                'content' => json_encode($postData)
-            )
-        ));
-
-        $response = file_get_contents($url,FALSE, $context);
-
-        if ($response === FALSE){
-            echo "Something went wrong.";
-
-            exit();
-
-        }
-
-        return json_decode($response)->string;
+        return $this->helper->consumeApi($this->DECODE_URL, $data);
 
     }
 

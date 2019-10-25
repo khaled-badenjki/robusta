@@ -4,7 +4,8 @@ namespace App;
 
 use App\Helper;
 
-require ('EncryptionProvider.php');
+require_once ('EncryptionProvider.php');
+require_once ('Helper.php');
 
 
 /**
@@ -30,10 +31,10 @@ class ShiftEncryptionProvider implements EncryptionProvider
      * ShiftEncryptionProvider constructor.
      * @param $shift
      */
-    public function __construct($shift = 0)
+    public function __construct($helper)
     {
 
-        $this->helper = new Helper();
+        $this->helper = $helper;
 
         $this->SHIFT_AMOUNT = $this->helper->config['SHIFT_AMOUNT'];
 
@@ -55,7 +56,7 @@ class ShiftEncryptionProvider implements EncryptionProvider
      */
     public function decrypt($data){
 
-        return $this->helper->shiftLetters($this->SHIFT_AMOUNT, $data);
+        return $this->helper->shiftLetters( - $this->SHIFT_AMOUNT, $data);
 
     }
 }

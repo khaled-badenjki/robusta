@@ -25,10 +25,10 @@ class MatrixEncryptionProvider implements EncryptionProvider
      */
     private $DEC_MATRIX;
 
-    public function __construct()
+    public function __construct($helper)
     {
 
-        $this->helper = new Helper();
+        $this->helper = $helper;
 
         $this->ENC_MATRIX = $this->helper->config['ENC_MATRIX'];
 

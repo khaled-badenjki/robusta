@@ -4,6 +4,9 @@ namespace App;
 
 require_once ('ShiftEncryptionProvider.php');
 require_once ('MatrixEncryptionProvider.php');
+require_once ('ReverseEncryptionProvider.php');
+require_once ('Helper.php');
+
 
 class Cli {
 
@@ -11,23 +14,27 @@ class Cli {
 
     public $matrixProvider;
 
-public function __construct(ShiftEncryptionProvider $shiftEncrypter, MatrixEncryptionProvider $matrixEncrypter)
+    public $reverseProvider;
+
+public function __construct(ShiftEncryptionProvider $shiftEncrypter, MatrixEncryptionProvider $matrixEncrypter, ReverseEncryptionProvider $reverseEncrypter)
 {
 
     $this->shiftProvider = $shiftEncrypter;
 
     $this->matrixProvider = $matrixEncrypter;
 
+    $this->reverseProvider = $reverseEncrypter;
+
     $handle = fopen ("php://stdin", "r");
 
     echo "Please enter the string you would like to encrypt or decrypt: \n";
     $data = trim(fgets($handle));
 
-    echo "Please choose the encryption algorithm: \n 1- Shift Encryption \n 2- Matrix Encryption \n";
+    echo "Please choose the encryption algorithm: \n 1- Shift Encryption \n 2- Matrix Encryption \n 3- Reverse Encryption \n";
     $type = fgets($handle);
 
     echo "Please choose the type of operation: \n 1- Encrypt \n 2- Decrypt \n";
-    $opr = fgets($handle);
+    $operation = fgets($handle);
 
     switch ($type)
     {
@@ -37,11 +44,14 @@ public function __construct(ShiftEncryptionProvider $shiftEncrypter, MatrixEncry
         case 2:
             $encrypter = $this->matrixProvider;
             break;
+        case 3:
+            $encrypter = $this->reverseProvider;
+            break;
         default:
             throwException('invalid');
     }
 
-    switch ($opr) {
+    switch ($operation) {
         case 1:
             $result = $encrypter->encrypt($data);
             break;
@@ -55,12 +65,14 @@ public function __construct(ShiftEncryptionProvider $shiftEncrypter, MatrixEncry
     echo "The result is: \n $result";
 
     echo "\n";
-    echo "Thank you, continuing...\n";
+    echo "Thank you ...\n";
 }
 
 }
 
-$shiftEncrypter = new ShiftEncryptionProvider(3);
-$matrixEncrypter = new MatrixEncryptionProvider();
+$helper = new Helper();
+$shiftEncrypter = new ShiftEncryptionProvider($helper);
+$matrixEncrypter = new MatrixEncryptionProvider($helper);
+$reverseEncrypter = new ReverseEncryptionProvider($helper);
 
-$cli = new Cli($shiftEncrypter, $matrixEncrypter);
+$cli = new Cli($shiftEncrypter, $matrixEncrypter, $reverseEncrypter);
