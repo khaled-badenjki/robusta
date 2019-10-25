@@ -105,20 +105,24 @@ class MatrixEncryptionProvider implements EncryptionProvider
 
     /**
      * @param $data
-     * @return array
+     * @return string
      */
     public function encrypt($data)
     {
 
-        $stringEncoded = array();
+        $encodedString = '';
+
+        $encodedArray = array();
 
         foreach (str_split($data) as $char){
 
-            $stringEncoded[$char] = $this->matrixMultiplication($this->charToBinaryArray($char), $this->ENC_KEY);
+            $encodedArray[$char] = $this->matrixMultiplication($this->charToBinaryArray($char), $this->ENC_KEY);
+
+            $encodedString .= implode(',', $encodedArray[$char][0]) . ',';
 
         }
 
-        return $stringEncoded;
+        return $encodedString;
 
     }
 
@@ -135,9 +139,10 @@ class MatrixEncryptionProvider implements EncryptionProvider
     /**
      * @param $arr1
      * @param $arr2
+     * @param $round
      * @return array
      */
-    public function matrixMultiplication($arr1, $arr2){
+    public function matrixMultiplication($arr1, $arr2, bool $round = false){
 
         $r=count($arr1);
 
@@ -167,6 +172,8 @@ class MatrixEncryptionProvider implements EncryptionProvider
 
                 }
 
+                if($round) $result[$i][$j] = abs(round($result[$i][$j]));
+
             }
 
         }
@@ -176,5 +183,40 @@ class MatrixEncryptionProvider implements EncryptionProvider
     }
 
 
+    public function decrypt($data)
+    {
+        // TODO: Implement decrypt() method.
 
+        $decodedArray = array();
+
+        $index = 0;
+
+        if(substr($data,-1) == ',') {$x = substr($data, 0, -1);}
+
+        $encodedArray = array_chunk(array_map('intval', explode (',',$data)),16);
+
+        foreach ($encodedArray as $char){
+
+            $decodedArray[$index] = $this->matrixMultiplication(array($char), $this->DEC_KEY, true);
+
+            $index++;
+
+        }
+
+        $str = array();
+
+        for ($i = 0; $i < $index; $i++){
+
+            $decodedChar = $decodedArray[$i];
+
+            $str[$i] = implode(',', $decodedChar[0]);
+
+        }
+
+
+        return $str;
+//        15,12,12,14,15,15,14,9,6,14,12,8,8,20,17,5,20,21,13,18,17,18,15,9,6,22,17,14,17,29,24,5,
+
+
+    }
 }

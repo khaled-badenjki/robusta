@@ -23,7 +23,7 @@ class ShiftEncryptionProvider implements EncryptionProvider
      * ShiftEncryptionProvider constructor.
      * @param $shift
      */
-    public function __construct($shift)
+    public function __construct($shift = 0)
     {
 
         $this->shift = $shift;
@@ -32,11 +32,12 @@ class ShiftEncryptionProvider implements EncryptionProvider
 
     /**
      * @param $data
+     * @param $shift
      * @return string
      */
-    public function encrypt($data){
+    public function encrypt($data, $shift = 0){
 
-        $distance = $this->shift % 26;
+        $distance = $shift ? $shift % 26 : $this->shift % 26;
 
         $data = strtolower($data);
 
@@ -57,7 +58,7 @@ class ShiftEncryptionProvider implements EncryptionProvider
                 $result[$idx] = ' ';
 
                 continue;
-                
+
             }
 
             $result[$idx] = chr(97 + (ord($char) - 97 + $distance) % 26);
@@ -68,4 +69,18 @@ class ShiftEncryptionProvider implements EncryptionProvider
 
     }
 
+    /**
+     * @param $data
+     * @param $shift
+     * @return string
+     */
+    public function decrypt($data, $shift = 0)
+    {
+        // TODO: Implement decrypt() method.
+
+        $shift = $shift ? - $shift : - $this->shift;
+
+        return $this->encrypt($data, $shift);
+
+    }
 }
