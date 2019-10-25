@@ -2,16 +2,26 @@
 
 namespace App;
 
-use App\ShiftEncryptionProvider;
+require_once ('ShiftEncryptionProvider.php');
+require_once ('MatrixEncryptionProvider.php');
 
 class Cli {
 
-public function __construct()
+    public $shiftProvider;
+
+    public $matrixProvider;
+
+public function __construct(ShiftEncryptionProvider $shiftEncrypter, MatrixEncryptionProvider $matrixEncrypter)
 {
+
+    $this->shiftProvider = $shiftEncrypter;
+
+    $this->matrixProvider = $matrixEncrypter;
+
     $handle = fopen ("php://stdin", "r");
 
     echo "Please enter the string you would like to encrypt or decrypt: \n";
-    $data = fgets($handle);
+    $data = trim(fgets($handle));
 
     echo "Please choose the encryption algorithm: \n 1- Shift Encryption \n 2- Matrix Encryption \n";
     $type = fgets($handle);
@@ -19,15 +29,13 @@ public function __construct()
     echo "Please choose the type of operation: \n 1- Encrypt \n 2- Decrypt \n";
     $opr = fgets($handle);
 
-    $encrypter = new ShiftEncryptionProvider(3);
-
     switch ($type)
     {
         case 1:
-            $encrypter = new ShiftEncryptionProvider(3);
+            $encrypter = $this->shiftProvider;
             break;
         case 2:
-            $encrypter = new MatrixEncryptionProvider;
+            $encrypter = $this->matrixProvider;
             break;
         default:
             throwException('invalid');
@@ -50,7 +58,9 @@ public function __construct()
     echo "Thank you, continuing...\n";
 }
 
-
-
-
 }
+
+$shiftEncrypter = new ShiftEncryptionProvider(3);
+$matrixEncrypter = new MatrixEncryptionProvider();
+
+$cli = new Cli($shiftEncrypter, $matrixEncrypter);

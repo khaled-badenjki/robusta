@@ -2,6 +2,11 @@
 
 namespace App;
 
+use App\Helper;
+
+require ('EncryptionProvider.php');
+
+
 /**
  * ShiftEncryptionProvider
  *
@@ -16,7 +21,9 @@ class ShiftEncryptionProvider implements EncryptionProvider
      * @var
      * the amount of data shifted on encryption
      */
-    protected $shift;
+    private $SHIFT_AMOUNT;
+
+    public $helper;
 
 
     /**
@@ -26,61 +33,29 @@ class ShiftEncryptionProvider implements EncryptionProvider
     public function __construct($shift = 0)
     {
 
-        $this->shift = $shift;
+        $this->helper = new Helper();
+
+        $this->SHIFT_AMOUNT = $this->helper->config['SHIFT_AMOUNT'];
 
     }
 
     /**
      * @param $data
-     * @param $shift
      * @return string
      */
-    public function encrypt($data, $shift = 0){
+    public function encrypt($data){
 
-        $distance = $shift ? $shift % 26 : $this->shift % 26;
-
-        $data = strtolower($data);
-
-        $result = array();
-
-        $characters = str_split($data);
-
-        if ($distance < 0) {
-
-            $distance += 26;
-
-        }
-
-        foreach ($characters as $idx => $char) {
-
-            if ($char == ' '){
-
-                $result[$idx] = ' ';
-
-                continue;
-
-            }
-
-            $result[$idx] = chr(97 + (ord($char) - 97 + $distance) % 26);
-
-        }
-
-        return join("", $result);
+        return $this->helper->shiftLetters($this->SHIFT_AMOUNT, $data);
 
     }
 
     /**
      * @param $data
-     * @param $shift
      * @return string
      */
-    public function decrypt($data, $shift = 0)
-    {
-        // TODO: Implement decrypt() method.
+    public function decrypt($data){
 
-        $shift = $shift ? - $shift : - $this->shift;
-
-        return $this->encrypt($data, $shift);
+        return $this->helper->shiftLetters($this->SHIFT_AMOUNT, $data);
 
     }
 }
